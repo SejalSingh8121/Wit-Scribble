@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wit Scribble - Notes</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:system-ui,Arial,sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background: rgb(194,252,255) url("img/6.jpg") top / cover no-repeat;
+}
+header{
+  background: rgb(6,16,40);
+  padding:15px 5%;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo-text{
+  font-size:2rem;
+  background: linear-gradient(45deg,#98abff,#b180e1,#f7b0ff);
+  background-size:200% 200%;
+  background-clip: text;          /* standard */
+  -webkit-background-clip: text;  /* for Chrome/Safari */
+  -webkit-text-fill-color: transparent; /* makes text transparent so gradient shows */
+  animation:gradientShift 3s ease-in-out infinite;
+  font-weight:500;
+  letter-spacing:2px;
+  text-shadow:0px 7px 10px rgba(173, 207, 255, 0.3);
+  transition: transform 0.5s ease-in-out;
+}
+
+.logo-text:hover{
+  transform: scale(1.1); /* increase size by 10% */
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.btn-primary{
+  padding:8px 15px;
+  border-radius:10px;
+  text-decoration:none;
+  color:white;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  box-shadow:0px 7px 30px rgba(173, 207, 255, 0.3);
+  transition: transform 0.5s ease-in-out;
+}
+.btn-primary:hover{
+  transform: scale(1.1); /* increase size by 10% */
+}
+main{
+  background-color: #0000007a;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 5%;
+}
+
+/* Controls Row */
+.controls{
+  display:flex;
+  gap:10px;
+  margin-bottom:30px;
+  width:100%;
+  max-width:1200px;
+  justify-content:center;
+  align-items:center;
+}
+.search-container{
+  flex:1;
+  min-width:150px;
+  max-width:500px;
+  position:relative;
+}
+.search-input{
+  width:100%;
+  padding:10px 35px 10px 20px;
+  border-radius:25px;
+  border:none;
+  font-size:16px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+.search-clear {
+    position: absolute;
+    right:10px;
+    top:50%;
+    transform: translateY(-50%);
+    background:none;
+    border:none;
+    font-size:18px;
+    cursor:pointer;
+    color:#666;
+    display:none;
+}
+.search-clear:hover {
+    color:#000;
+}
+.add-note-btn{
+  padding:10px 20px;
+  border-radius:50px;
+  font-size:20px;
+  border:none;
+  background: radial-gradient(#ff168a,#ffffff);
+  cursor:pointer;
+  flex-shrink:0;
+  transition: transform 0.5s ease-in-out;
+}
+.add-note-btn:hover{
+  transform: scale(1.1); /* increase size by 10% */
+  box-shadow:0 15px 35px rgba(0,0,0,0.15);
+  background: radial-gradient(#ff0088,#ffffff);
+}
+
+/* Notes Grid */
+.notes-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+  width:100%;
+  max-width:1200px;
+}
+.note-card{
+  background: rgba(255,255,255,0.95);
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
+  cursor:pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.note-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+.note-title{ font-size:1.3em; font-weight:600; margin-bottom:10px; color:#2c3e50; word-wrap:break-word;}
+.note-content{ color:#555; line-height:1.5; max-height:120px; overflow:hidden; word-wrap:break-word; margin-bottom:15px;}
+.note-meta{ display:flex; justify-content:space-between; font-size:0.85em; color:#888; border-top:1px solid #eee; padding-top:10px;}
+.note-actions button{ margin-left:5px; border:none; padding:5px 10px; border-radius:12px; cursor:pointer; font-size:12px; font-weight:500;}
+.edit-btn{background:#74b9ff;color:white;}
+.edit-btn:hover{background:#0984e3;}
+.delete-btn{background:#fd79a8;color:white;}
+.delete-btn:hover{background:#e84393;}
+
+/* Footer */
+footer{
+  text-align:center;
+  padding:15px 5%;
+  background: rgba(0,0,0,0.8);
+  color:white;
+}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+.modal.show{display:flex;}
+.modal-content{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  width:90%;
+  max-width:400px;
+  max-height:80vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;}
+.close-btn{background:none; border:none; font-size:24px; cursor:pointer; color:#999; padding:5px; border-radius:50%; transition: all 0.2s ease;}
+.close-btn:hover{background:#f1f1f1; color:#333;}
+.form-group{margin-bottom:15px;}
+.form-label{display:block; margin-bottom:5px; font-weight:500;}
+.form-input,.form-textarea{width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px; font-size:16px; resize:vertical;}
+.form-input:focus,.form-textarea:focus{outline:none; border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,0.1);}
+.modal-actions{display:flex; gap:10px; justify-content:flex-end;}
+.save-btn{padding:10px 20px; border:none; border-radius:25px; background:linear-gradient(45deg,#00b894,#00cec9); color:white; cursor:pointer;}
+.cancel-btn{padding:10px 20px; border:none; border-radius:25px; background:#ddd; color:#333; cursor:pointer;}
+
+/* Responsive adjustments */
+@media(max-width:768px){
+  .search-input{font-size:14px; padding:8px 35px 8px 15px;}
+  .add-note-btn{padding:8px 15px; font-size:18px;}
+}
+@media(max-width:480px){
+  .search-input{font-size:13px; padding:6px 30px 6px 12px;}
+  .add-note-btn{padding:6px 12px; font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-text">𝕎𝕚𝕥 𝕤𝕔𝕣𝕚𝕓𝕓𝕝𝕖𓂃🖊</div>
+  <a href="SignupPage.html" class="btn-primary">✨ Get Started</a>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="search-container">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search your notes...">
+      <button class="search-clear" id="searchClear">×</button>
+    </div>
+    <button class="add-note-btn" id="addNoteBtn"><b>+</b></button>
+  </div>
+
+  <div class="notes-grid" id="notesGrid"></div>
+</main>
+
+<!-- Modal -->
+<div class="modal" id="noteModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Note</h3>
+      <button class="close-btn" id="closeModal">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" id="noteTitle" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content</label>
+      <textarea id="noteContent" class="form-textarea"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelBtn">Cancel</button>
+      <button class="save-btn" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+class NotesApp{
+  constructor(){
+    this.notes=[];
+    this.editId=null;
+    this.loadNotes();
+    this.render();
+
+    // Elements
+    this.addBtn=document.getElementById('addNoteBtn');
+    this.modal=document.getElementById('noteModal');
+    this.closeBtn=document.getElementById('closeModal');
+    this.cancelBtn=document.getElementById('cancelBtn');
+    this.saveBtn=document.getElementById('saveBtn');
+    this.searchInput=document.getElementById('searchInput');
+    this.searchClear=document.getElementById('searchClear');
+    this.titleInput=document.getElementById('noteTitle');
+    this.contentInput=document.getElementById('noteContent');
+
+    // Events
+    this.addBtn.onclick=()=>this.showModal();
+    this.closeBtn.onclick=()=>this.hideModal();
+    this.cancelBtn.onclick=()=>this.hideModal();
+    this.saveBtn.onclick=()=>this.saveNote();
+    this.searchInput.oninput=(e)=>this.search(e.target.value);
+    this.searchClear.onclick=()=>this.clearSearch();
+  }
+
+  loadNotes(){
+    const stored=localStorage.getItem('notesapp-notes');
+    if(stored) this.notes=JSON.parse(stored);
+  }
+
+  saveNotes(){ localStorage.setItem('notesapp-notes',JSON.stringify(this.notes)); }
+
+  showModal(editId=null){
+    this.editId=editId;
+    if(editId){
+      const note=this.notes.find(n=>n.id===editId);
+      this.titleInput.value=note.title;
+      this.contentInput.value=note.content;
+      document.getElementById('modalTitle').textContent = 'Edit Note';
+    } else {
+      this.titleInput.value = '';
+      this.contentInput.value = '';
+      document.getElementById('modalTitle').textContent = 'Add Note';
+    }
+    this.modal.classList.add('show');
+  }
+
+  hideModal() {
+    this.modal.classList.remove('show');
+    this.editId = null;
+  }
+
+  saveNote() {
+    const title = this.titleInput.value.trim();
+    const content = this.contentInput.value.trim();
+    if (!title || !content) {
+      alert('Please fill in both fields!');
+      return;
+    }
+
+    const timestamp = new Date().toLocaleString();
+
+    if (this.editId) {
+      const note = this.notes.find(n => n.id === this.editId);
+      note.title = title;
+      note.content = content;
+      note.dateModified = timestamp;
+    } else {
+      this.notes.unshift({
+        id: Date.now(),
+        title,
+        content,
+        dateModified: timestamp
+      });
+    }
+
+    this.saveNotes();
+    this.render();
+    this.hideModal();
+  }
+
+  deleteNote(id) {
+    if (confirm('Are you sure you want to delete this note?')) {
+      this.notes = this.notes.filter(n => n.id !== id);
+      this.saveNotes();
+      this.render();
+    }
+  }
+
+  search(query) {
+    this.searchClear.style.display = query.trim() ? 'block' : 'none';
+    const grid = document.getElementById('notesGrid');
+    grid.innerHTML = '';
+    const filtered = this.notes.filter(n =>
+      n.title.toLowerCase().includes(query.toLowerCase()) ||
+      n.content.toLowerCase().includes(query.toLowerCase())
+    );
+    filtered.forEach(n => this.createCard(n));
+  }
+
+  clearSearch() {
+    this.searchInput.value = '';
+    this.searchClear.style.display = 'none';
+    this.render();
+  }
+
+  render() {
+    const grid = document.getElementById('notesGrid');
+    grid.innerHTML = '';
+    this.notes.forEach(n => this.createCard(n));
+  }
+
+  createCard(note) {
+    const grid = document.getElementById('notesGrid');
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.innerHTML = `
+      <h3 class="note-title">${note.title}</h3>
+      <p class="note-content">${note.content}</p>
+      <div class="note-meta">
+        <span>${note.dateModified}</span>
+        <div class="note-actions">
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      </div>
+    `;
+    card.querySelector('.edit-btn').onclick = (e) => {
+      e.stopPropagation();
+      this.showModal(note.id);
+    };
+    card.querySelector('.delete-btn').onclick = (e) => {
+      e.stopPropagation();
+      this.deleteNote(note.id);
+    };
+    grid.appendChild(card);
+  }
+}
+
+const app = new NotesApp();
+</script>
+
+<footer>
+  &copy; 2025 Wit Scribble. All rights reserved.
+</footer>
+
+</body>
+</html>

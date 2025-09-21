@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wit Scribble - Login</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:system-ui, Arial, sans-serif;}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgb(194,252,255) url("img/6.jpg") top / cover no-repeat;
+}
+
+header {
+  background: rgb(6,16,40);
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo-text{
+  font-size:2rem;
+  background: linear-gradient(45deg,#98abff,#b180e1,#f7b0ff);
+  background-size:200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease-in-out infinite;
+  font-weight:500;
+  letter-spacing:2px;
+  text-shadow:0px 7px 10px rgba(173, 207, 255, 0.3);
+  transition: transform 0.5s ease-in-out;
+}
+.logo-text:hover{
+  transform: scale(1.1);
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin-left:20px;
+  font-weight:500;
+}
+nav a:hover{
+  color:#f7b0ff;
+}
+
+main{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:30px 5%;
+}
+
+form.login-form{
+  background: rgba(255,255,255,0.95);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow:0 10px 35px rgba(0,0,0,0.2);
+  width: 400px;
+  max-width: 90%;
+}
+
+form.login-form h2{
+  text-align:center;
+  margin-bottom:20px;
+  font-size:1.8rem;
+  background: linear-gradient(45deg,#98abff,#b180e1,#f7b0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+form.login-form label{
+  display:block;
+  margin:15px 0 5px;
+  font-weight:500;
+}
+
+form.login-form input{
+  width:100%;
+  padding:10px 15px;
+  border-radius:10px;
+  border:2px solid #ddd;
+  font-size:16px;
+  transition: all 0.3s ease;
+}
+
+form.login-form input:focus{
+  border-color:#667eea;
+  box-shadow:0 0 0 3px rgba(102,126,234,0.1);
+  outline:none;
+}
+
+form.login-form .btn{
+  margin-top:20px;
+  padding:10px;
+  border:none;
+  width:100%;
+  font-size:16px;
+  border-radius:25px;
+  cursor:pointer;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color:white;
+  transition: all 0.3s ease;
+}
+form.login-form .btn:hover{
+  transform: scale(1.05);
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+form.login-form .secondary-btn{
+  background:#ddd;
+  color:#333;
+  margin-top:10px;
+}
+form.login-form .secondary-btn:hover{
+  background:#bbb;
+}
+
+hr.divider{
+  border:none;
+  height:1px;
+  background:#ccc;
+  margin:20px 0;
+  position:relative;
+}
+hr.divider::before{
+  content:"OR";
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  background:white;
+  padding:0 10px;
+  color:#555;
+}
+
+footer{
+  text-align:center;
+  padding:15px 5%;
+  color:white;
+  margin-top:auto;
+}
+
+/* RESPONSIVE */
+@media(max-width:500px){
+  form.login-form{
+    width:95%;
+    padding:20px;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-text">𝕎𝕚𝕥 𝕤𝕔𝕣𝕚𝕓𝕓𝕝𝕖𓂃🖊</div>
+  <nav>
+    <a href="Index.html">Home</a>
+    <a href="SignupPage.html">Signup</a>
+  </nav>
+</header>
+
+<main>
+  <form class="login-form">
+    <h2>Login to Wit Scribble</h2>
+
+    <label for="email">Email :</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+
+    <hr class="divider">
+
+    <label for="phone">Phone Number :</label>
+    <input type="tel" id="phone" placeholder="Optional">
+
+    <label for="password">Password :</label>
+    <input type="password" id="password" placeholder="Enter password" required>
+
+    <p style="font-size:12px; margin-top:5px;"><a href="#">Forgot Password?</a></p>
+    <p style="font-size:12px; margin-top:5px;"><a href="#">Login using OTP?</a></p>
+
+    <button type="submit" class="btn">Login</button>
+  </form>
+</main>
+
+<footer>
+  &copy; 2025 Wit Scribble | All Rights Reserved
+</footer>
+</body>
+</html>
